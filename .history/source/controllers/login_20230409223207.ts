@@ -76,11 +76,9 @@ const excluir = async (req: Request, res: Response, next: NextFunction) => {
         }
     })
 
-    if(excluiu){
-        cadastros.splice(aux, 1);
+    cadastros.splice(aux, 1);
 
-        fs.writeFileSync(arquivoJson, JSON.stringify(cadastros));
-    }
+    fs.writeFileSync(arquivoJson, JSON.stringify(cadastros));
 
     return res.status(200).json({
         message: mensagem,

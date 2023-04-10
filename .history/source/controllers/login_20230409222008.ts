@@ -1,4 +1,3 @@
-//mudar variaveis para escopo geral do controller a fim de evitar repetição de código.
 import { Request, Response, NextFunction } from 'express';
 
 interface Cadastro {
@@ -60,31 +59,9 @@ const logar = async (req: Request, res: Response, next: NextFunction) => {
 
 const excluir = async (req: Request, res: Response, next: NextFunction) => {
     let id: string = req.body.id;
-    let mensagem : String = "";
-    let aux : number = 0;
-    let excluiu : boolean = false;
-    // mudar para forEach que o indice;
-    cadastros.forEach(elemento => {
-        if(parseInt(id) === elemento.id){
-            mensagem = "Usuário excluído com sucesso" ;
-            excluiu = true;
-        }else{
-            mensagem = "Usuário não existe";
-        }
-        if(!excluiu){
-            aux++;
-        }
-    })
-
-    if(excluiu){
-        cadastros.splice(aux, 1);
-
-        fs.writeFileSync(arquivoJson, JSON.stringify(cadastros));
-    }
-
+    
     return res.status(200).json({
-        message: mensagem,
-        cadastros : [cadastros]
+        message: "excluido com sucesso"
     });
 };
 
