@@ -2,10 +2,10 @@
   "name": "backend-node-tcc",
   "version": "1.0.0",
   "description": "",
-  "main": "source/server.ts",
+  "main": "./source/server.ts",
   "scripts": {
-    "dev": "nodemon source/server.ts",
-    "build" : "rm -rf build/ && prettier --write source/ && tsc"
+    "dev": "ts-node-dev ./source/server.ts",
+    "build": "esbuild ./source/server.ts --platform=node --bundle --minify --outfile=build/index.js"
   },
   "repository": {
     "type": "git",
@@ -28,5 +28,9 @@
     "nodemon": "^2.0.22",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
+  },
+  "devDependencies": {
+    "esbuild": "^0.17.16",
+    "ts-node-dev": "^2.0.0"
   }
 }
