@@ -6,7 +6,7 @@ RUN npm install
 
 RUN npm run build
 
-FROM node:16-alphine
+FROM node:16-alpine
 
 WORKDIR /app
 
