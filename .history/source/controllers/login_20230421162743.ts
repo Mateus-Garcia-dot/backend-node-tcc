@@ -101,8 +101,7 @@ const atualizar = async (req: Request, res: Response, next: NextFunction) => {
     });
 
     return res.status(200).json({
-        message: "atualizado com sucesso",
-        cadastros : [cadastros]
+        message: "atualizado com sucesso"
     });
 };
 

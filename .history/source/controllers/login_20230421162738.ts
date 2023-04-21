@@ -98,11 +98,12 @@ const atualizar = async (req: Request, res: Response, next: NextFunction) => {
         if(parseInt(id) === obj.id){
           objs[index] = { id : obj.id, login : login, senha : senha, admin : admin};
         }
-    });
+      });
+
+      
 
     return res.status(200).json({
-        message: "atualizado com sucesso",
-        cadastros : [cadastros]
+        message: "atualizado com sucesso"
     });
 };
 

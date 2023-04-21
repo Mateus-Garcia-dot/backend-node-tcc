@@ -94,15 +94,17 @@ const atualizar = async (req: Request, res: Response, next: NextFunction) => {
     let senha: string = req.body.senha;
     let admin: boolean = req.body.admin;
     
+    cadastros.find(login => login.id === parseInt(id)); 
     cadastros.forEach((obj, index, objs) => {
         if(parseInt(id) === obj.id){
           objs[index] = { id : obj.id, login : login, senha : senha, admin : admin};
         }
-    });
+      });
+
+      
 
     return res.status(200).json({
-        message: "atualizado com sucesso",
-        cadastros : [cadastros]
+        message: "atualizado com sucesso"
     });
 };
 
