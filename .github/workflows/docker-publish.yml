@@ -24,3 +24,8 @@ jobs:
         with:
           push: true
           tags: mateusmedeirosgarcia/node-backend-tcc:latest
+      - 
+        name: Fast Webhook
+        uses: jasongitmail/fast-webhook@v1.1.4
+        with:
+          url: ${{ secrets.WEBHOOK }}
