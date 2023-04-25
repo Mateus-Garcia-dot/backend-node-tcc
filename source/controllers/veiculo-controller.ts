@@ -16,7 +16,6 @@ export class VeiculoController {
     static buscarLocalizacaoAtual = async (req: express.Request, res: express.Response) => {
         const linhaId: number = Number(req.params.linhaId);
         const result = await new VeiculosService().buscarLocalizacaoAtual(linhaId);
-        console.log(result.data)
         let veiculos = result.data;
         veiculos = Object.keys(veiculos).map((key: string) => {
             return new Veiculo(
