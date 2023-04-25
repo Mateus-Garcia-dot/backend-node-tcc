@@ -16,8 +16,10 @@ export default class PontoController {
 
     static buscarPontosPorLinha = async (req: express.Request, res: express.Response) => {
         const linhaId: string = req.params.linhaId;
-        const result = await new PontosService().buscarPontosPorLinha(linhaId);
-        let pontos: [Ponto] = result.data;
-        return res.status(200).json(pontos);
+        console.log(req.query)
+        const pagina: number = Number(req.query.pagina);
+        const qtdPorPagina: number = Number(req.query.qtdPorPagina);
+        const result = await new PontosService().buscarPontosPorLinha(linhaId, pagina, qtdPorPagina);
+        return res.status(200).json(result);
     };
 }
