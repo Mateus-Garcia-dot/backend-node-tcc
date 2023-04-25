@@ -2,11 +2,11 @@ export class Shape {
 
     constructor(sentido: string, latitude: number, longitude: number) {
         this.sentido = sentido;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.lat = latitude;
+        this.lng = longitude;
     }
 
     sentido: string;
-    latitude: number;
-    longitude: number;
+    lat: number;
+    lng: number;
 }
