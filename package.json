@@ -4,7 +4,7 @@
   "description": "",
   "main": "./source/server.ts",
   "scripts": {
-    "dev": "ts-node-dev ./source/server.ts",
+    "dev": "nodemon ./source/server.ts",
     "build": "esbuild ./source/server.ts --platform=node --bundle --minify --outfile=build/index.js; cp login_temporario.json build "
   },
   "repository": {

@@ -1,5 +1,5 @@
 import express from 'express';
-import controller from '../controllers/login';
+import controller from '../controllers/login-controller';
 const router = express.Router();
 
 router.post('/inserir', controller.inserir);
