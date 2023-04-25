@@ -3,7 +3,7 @@ import { VeiculoController } from "../controllers/veiculo-controller";
 
 const router = express.Router();
 
-router.get("/veiculos/linha/:id", VeiculoController.buscarLocalizacaoVeiculoPorLinha)
+router.get("/veiculos/linha/:linhaId", VeiculoController.buscarLocalizacaoVeiculoPorLinha)
 
 
   export default router;   

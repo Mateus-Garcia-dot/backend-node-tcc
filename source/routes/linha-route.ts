@@ -3,7 +3,7 @@ import LinhasController from "../controllers/linha-controller";
 
 const router = express.Router();
 
-router.get("/linhas/shape/:id", LinhasController.buscarShapes)
+router.get("/linhas/shape/:linhaId", LinhasController.buscarShapes)
 
 router.get("/linhas", LinhasController.buscarLinhas)
 

@@ -3,7 +3,7 @@ import PontosController from "../controllers/ponto-controller";
 
 const router = express.Router();
 
-router.get("/pontos/linha/:id", PontosController.buscarPontosPorLinha);
+router.get("/pontos/linha/:linhaId", PontosController.buscarPontosPorLinha);
 
 
   export default router;   

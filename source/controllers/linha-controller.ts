@@ -13,7 +13,7 @@ export default class LinhasController {
     };
 
     static buscarShapes = async (req: express.Request, res: express.Response) => {
-        const linhaId: number = Number(req.params.linhaId);
+        const linhaId: string = req.params.linhaId;
         const result = await new LinhasService().buscarShape(linhaId);
         let shapes: Shape[] = result.data;
         shapes = shapes.map((pontoShape: any) => {
