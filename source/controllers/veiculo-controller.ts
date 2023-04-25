@@ -8,14 +8,14 @@ export class VeiculoController {
 
     static buscarVeiculo = async (req: express.Request, res: express.Response) => {
         let result: AxiosResponse = await axios.get('');
-        let posts: [Veiculo] = result.data;
+        let veiculos: [Veiculo] = result.data;
         return res.status(200).json({
         });
     };
 
-    static buscarLocalizacaoAtual = async (req: express.Request, res: express.Response) => {
+    static buscarLocalizacaoVeiculoPorLinha = async (req: express.Request, res: express.Response) => {
         const linhaId: number = Number(req.params.linhaId);
-        const result = await new VeiculosService().buscarLocalizacaoAtual(linhaId);
+        const result = await new VeiculosService().buscarLocalizacaoVeiculoPorLinha(linhaId);
         let veiculos = result.data;
         veiculos = Object.keys(veiculos).map((key: string) => {
             return new Veiculo(

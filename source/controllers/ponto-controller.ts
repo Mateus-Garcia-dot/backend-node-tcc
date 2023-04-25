@@ -14,7 +14,7 @@ export default class PontoController {
     };
 
 
-    static buscarPontoPorFitros = async (req: express.Request, res: express.Response) => {
+    static buscarPontosPorLinha = async (req: express.Request, res: express.Response) => {
         const linhaId: number = Number(req.params.linhaId);
         const result = await new PontosService().buscarPontosPorLinha(linhaId);
         let pontos: [Ponto] = result.data;
