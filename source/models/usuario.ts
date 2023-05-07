@@ -1,10 +1,12 @@
-export class Usuario {
-    
-    constructor(nome: string, isAdmin: boolean = false) {
-        this.nome = nome;
-        this.isAdmin = isAdmin;
-    }
+import mongoose from "mongoose";
 
-    nome: string;
-    isAdmin: boolean;
-}
+const usuarioSchema = new mongoose.Schema(
+  {
+    _id: {type: String},
+    email: {type: String},
+  }
+);
+
+const usuarios = mongoose.model('usuarios', usuarioSchema);
+
+export default usuarios;

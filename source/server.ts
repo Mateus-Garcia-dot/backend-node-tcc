@@ -1,6 +1,7 @@
 import express from 'express'
 import routes from './routes/routes'
 import morgan from 'morgan';
+import db from "./database/db-connect"
 
 
 const PORT = process.env.PORT || 4000
@@ -28,8 +29,8 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Headers', 'origin, X-Requested-With,Content-Type,Accept, Authorization');
   // set the CORS method headers
   if (req.method === 'OPTIONS') {
-      res.header('Access-Control-Allow-Methods', 'GET PATCH DELETE POST');
-      return res.status(200).json({});
+    res.header('Access-Control-Allow-Methods', 'GET PATCH DELETE POST');
+    return res.status(200).json({});
   }
   next();
 });
@@ -37,3 +38,7 @@ app.use((req, res, next) => {
 app.use((req, res) => res.status(404));
 
 app.listen(PORT, () => console.log(`Servidor rodando com sucesso ${HOSTNAME}:${PORT}`));
+
+
+db.on("error", console.log.bind(console, 'Erro de conexão'))
+db.once("open", () => console.log('conexão com o banco feita com sucesso'))
