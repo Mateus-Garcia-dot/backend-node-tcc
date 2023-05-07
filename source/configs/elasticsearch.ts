@@ -1,9 +1,10 @@
-import elasticsearch from 'elasticsearch';
+import elasticsearch from '@elastic/elasticsearch';
+import { trace } from '../routes/login-route';
 
 function getClient() {
   const client = new elasticsearch.Client({
-    // host: 'localhost:9200',
-    // log: 'trace'
+    node: 'https://elastic.tccurbstads.com/',
+    auth: {username: "elastic", password: "!@ContaElastic"},
   });
 
   return client;

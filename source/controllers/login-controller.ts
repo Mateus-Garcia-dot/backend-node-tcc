@@ -1,6 +1,5 @@
 //mudar variaveis para escopo geral do controller a fim de evitar repetição de código.
 import { Request, Response, NextFunction } from 'express';
-import { UsuariosService } from '../services/usuarios-service';
 
 interface Cadastro {
     id : number,
@@ -42,8 +41,6 @@ const logar = async (req: Request, res: Response, next: NextFunction) => {
     let senha: string = req.body.senha;
     let id : number = 0;
     let mensagem : String = "";
-
-    console.log(await new UsuariosService().listarUsuarios());
     
     cadastros.forEach(elemento => {
         if(login === elemento.login && senha === elemento.senha){
