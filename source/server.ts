@@ -1,7 +1,7 @@
 import express from 'express'
 import routes from './routes/routes'
 import morgan from 'morgan';
-import db from "./database/db-connect"
+import db from "./configs/mongo-connect"
 
 
 const PORT = process.env.PORT || 4000
