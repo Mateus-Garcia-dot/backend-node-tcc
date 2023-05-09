@@ -1,12 +1,21 @@
-export class Shape {
+import mongoose from "mongoose";
 
-    constructor(sentido: string, latitude: number, longitude: number) {
-        this.sentido = sentido;
-        this.lat = latitude;
-        this.lng = longitude;
-    }
+export interface IShape extends Document {
+    _id: string,
+    COD: string,
+    SHP: number,
+    coordinate: { coordinates: []},
+  }
 
-    sentido: string;
-    lat: number;
-    lng: number;
-}
+const shapeSchema = new mongoose.Schema(
+  {
+    _id: {type: String},
+    COD: {type: String},
+    SHP: {type: Number},
+    coordinate: {coordinates: []},
+  }
+);
+
+const shapes = mongoose.model('shapes', shapeSchema);
+
+export default shapes;

@@ -1,4 +1,5 @@
 import axios from "axios";
+import shapes, { IShape } from "../models/shape";
 
 export class LinhasService {
 
@@ -7,6 +8,8 @@ export class LinhasService {
     }
 
     async buscarShape(linhaId: string) {
-        return axios({ method: "get", url: `https://transporteservico.urbs.curitiba.pr.gov.br/getShapeLinha.php?linha=${linhaId}&c=98ad8` })
+        const shape = await shapes.findOne<IShape>({'COD': linhaId});
+        const coordenadas = shape?.coordinate.coordinates.map(coordenada => { return { lng: coordenada[0], lat: coordenada[1] } })
+        return coordenadas;
     }
 }
