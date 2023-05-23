@@ -7,4 +7,6 @@ router.get("/linhas/shape/:linhaId", LinhasController.buscarShapes)
 
 router.get("/linhas", LinhasController.buscarLinhas)
 
+router.get("/linhas/tabela/:linhaId", LinhasController.buscarTabela)
+
 export default router;   
