@@ -5,5 +5,6 @@ const router = express.Router();
 
 router.get("/pontos/linha/:linhaId", PontosController.buscarPontosPorLinha);
 
+router.get("/pontos", PontosController.buscarTodosPontos);
 
   export default router;   
