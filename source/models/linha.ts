@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 export interface ILinha extends Document {
     _id: string,
     COD: string,
-    NOME: number,
+    NOME: string,
     SOMENTE_CARTAO: string,
     NOME_COR: string
   }
@@ -12,7 +12,7 @@ export interface ILinha extends Document {
     {
       _id: {type: String},
       COD: {type: String},
-      NOME: {type: Number},
+      NOME: {type: String},
       SOMENTE_CARTAO: {type: String},
       NOME_COR: {type: String},
     }

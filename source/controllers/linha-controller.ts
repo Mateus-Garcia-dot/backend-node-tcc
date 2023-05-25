@@ -12,6 +12,13 @@ export default class LinhasController {
         return res.status(200).json({ linhas });
     };
 
+    static buscarLinhaPorId = async (req: express.Request, res: express.Response) => {
+        const linhaId: string = req.params.linhaId;
+        const result = await new LinhasService().buscarLinhaPorId(linhaId);
+        let linha: ILinha | null = result;
+        return res.status(200).json(linha);
+    };
+
     static buscarShapes = async (req: express.Request, res: express.Response) => {
         const linhaId: string = req.params.linhaId;
         let coordenadas = await new LinhasService().buscarShape(linhaId);

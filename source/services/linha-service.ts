@@ -4,6 +4,10 @@ import tabelaLinha, { ITabelaLinha } from "../models/tabela-linha";
 
 export class LinhasService {
 
+    async buscarLinhaPorId(linhaId: string) {
+        const linhasResult = await linhas.findOne<ILinha>({'COD': linhaId});
+        return linhasResult;
+    }    
 
     async buscarLinhas(pagina: number = 0, qntdPorPagina: number = 10) {
         const linhasResult = await linhas.find<ILinha>().skip(pagina).limit(qntdPorPagina);
