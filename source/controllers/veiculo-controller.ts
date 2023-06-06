@@ -15,8 +15,7 @@ export class VeiculoController {
 
     static buscarLocalizacaoVeiculoPorLinha = async (req: express.Request, res: express.Response) => {
         const linhaId: string = req.params.linhaId;
-        const result = await new VeiculosService().buscarLocalizacaoVeiculoPorLinha(linhaId);
-        let veiculos = result.data;
+        let veiculos = await new VeiculosService().buscarLocalizacaoVeiculoPorLinha(linhaId);
         veiculos = Object.keys(veiculos).map((key: string) => {
             return new Veiculo(
                 veiculos[key].COD,
