@@ -13,10 +13,9 @@ const cadastrarUsuarios = async (usuario: any) => {
 }
 
 const cadastrarLogin = async (login: any) => {
-    const salt = await bcrypt.genSalt(10);
-    const senhaCriptografada = await bcrypt.hash(login.senha, salt);
+    // const senhaCriptografada = await bcrypt.hash(login.senha, 10);
 
-    login.senha = senhaCriptografada;
+    // login.senha = senhaCriptografada;
 
     return await LoginModel.create(login);
 }
