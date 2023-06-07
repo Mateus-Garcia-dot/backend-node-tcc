@@ -30,6 +30,6 @@ const pontoSchema = new mongoose.Schema(
     }, { collection: 'pontosLinha' }
 );
 
-const pontosLinha = mongoose.model('pontosLinha', pontoSchema);
+const PontosLinhaModel = mongoose.model('pontosLinha', pontoSchema);
 
-export default pontosLinha;
+export default PontosLinhaModel;

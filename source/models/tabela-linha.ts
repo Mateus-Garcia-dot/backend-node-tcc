@@ -22,6 +22,6 @@ const tabelaLinhaSchema = new mongoose.Schema(
     },
     { collection: 'tabelaLinha' });
 
-const tabelaLinha = mongoose.model('tabelaLinha', tabelaLinhaSchema);
+const TabelaLinhaModel = mongoose.model('tabelaLinha', tabelaLinhaSchema);
 
-export default tabelaLinha;
+export default TabelaLinhaModel;

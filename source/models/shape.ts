@@ -16,6 +16,6 @@ const shapeSchema = new mongoose.Schema(
   }
 );
 
-const shapes = mongoose.model('shapes', shapeSchema);
+const ShapeModel = mongoose.model('shapes', shapeSchema);
 
-export default shapes;
+export default ShapeModel;

@@ -18,6 +18,6 @@ export interface ILinha extends Document {
     }
   );
   
-  const linhas = mongoose.model('linhas', linhaSchema);
+  const LinhaModel = mongoose.model('linhas', linhaSchema);
   
-  export default linhas;
+  export default LinhaModel;
