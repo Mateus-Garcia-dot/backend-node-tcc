@@ -28,7 +28,7 @@ export default class LinhasController {
 
     static buscarTabela = async (req: express.Request, res: express.Response) => {
         const linhaId: string = req.params.linhaId;
-        let tabelaLinha = await new LinhasService().buscarTabela(linhaId);
+        let tabelaLinha = await new LinhasService().buscarTabelaHoraria(linhaId);
 
         return res.status(200).json(tabelaLinha);
     };
