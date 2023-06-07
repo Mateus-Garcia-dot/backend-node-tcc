@@ -20,8 +20,27 @@ export class LinhasService {
         return coordenadas;
     }
 
-    async buscarTabela(linhaId: string) {
-        const tabelaResult = await tabelaLinha.find<ITabelaLinha>({ 'COD': linhaId });
+    async buscarTabelaHoraria(linhaId: string) {
+        const tabelaResult = await tabelaLinha
+        .aggregate([
+            {
+              $match: {
+                COD: linhaId 
+              }
+            },
+            {
+                $group: {
+                    _id: "$NUM", 
+                    horariosPonto: { $push: "$$ROOT" }
+                }
+              },
+            {
+              $sort: {
+                NUM: 1 
+              }
+            }
+          ])
+            
         return tabelaResult;
     }
 
