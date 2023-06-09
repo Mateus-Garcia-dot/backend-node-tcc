@@ -16,7 +16,7 @@ const Routes = (app: any) => {
     veiculosRoutes,
     pontosRoutes,
     loginRouter,
-    usuarioRouter
+    usuarioRouter,
   )
 }
 
