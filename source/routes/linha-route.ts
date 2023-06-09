@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get("/linhas", LinhasController.buscarLinhas)
 
-router.get("/linhas/:linhaId", LinhasController.buscarLinhaPorId)
+router.get("/linhas/:linhaId", LinhasController.buscarLinhaPorCod)
 
 router.get("/linhas/tabela/:linhaId", LinhasController.buscarTabela)
 

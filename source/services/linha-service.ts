@@ -4,7 +4,7 @@ import TabelaLinhaModel, { ITabelaLinha } from "../models/tabela-linha";
 
 export class LinhasService {
 
-    async buscarLinhaPorId(linhaId: string) {
+    async buscarLinhaPorCod(linhaId: string) {
         const linhasResult = await LinhaModel.findOne<ILinha>({'COD': linhaId});
         return linhasResult;
     }    

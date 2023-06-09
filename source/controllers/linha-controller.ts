@@ -9,12 +9,12 @@ export default class LinhasController {
         const qntdPorPagina = parseInt(req.query.qntdPorPagina as string);
         const result = await new LinhasService().buscarLinhas(pagina, qntdPorPagina);
         let linhas: ILinha[] = result;
-        return res.status(200).json({ linhas });
+        return res.status(200).json( linhas );
     };
 
-    static buscarLinhaPorId = async (req: express.Request, res: express.Response) => {
+    static buscarLinhaPorCod = async (req: express.Request, res: express.Response) => {
         const linhaId: string = req.params.linhaId;
-        const result = await new LinhasService().buscarLinhaPorId(linhaId);
+        const result = await new LinhasService().buscarLinhaPorCod(linhaId);
         let linha: ILinha | null = result;
         return res.status(200).json(linha);
     };
