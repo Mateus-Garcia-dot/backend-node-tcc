@@ -2,7 +2,8 @@ import express from 'express'
 import routes from './routes/routes'
 import morgan from 'morgan';
 import db from "./configs/mongo-connect"
-
+import cron from 'node-cron';
+import veiculoService from "./services/veiculo-service";
 
 const PORT = process.env.PORT || 4000
 const HOSTNAME = process.env.HOSTNAME || 'http://localhost'
@@ -21,6 +22,9 @@ app.use((req, res, next) => {
 })
 
 routes(app);
+
+// cron.schedule('*/2 * * * *',  veiculoService.atualizarLocalizacaoVeiculos );
+
 
 app.use((req, res) => res.status(404));
 

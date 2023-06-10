@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import express from 'express';
 import { Veiculo } from "../models/veiculo";
-import { VeiculosService } from "../services/veiculo-service";
+import  VeiculosService  from "../services/veiculo-service";
 
 
 export class VeiculoController {
@@ -15,7 +15,7 @@ export class VeiculoController {
 
     static buscarLocalizacaoVeiculoPorLinha = async (req: express.Request, res: express.Response) => {
         const linhaId: string = req.params.linhaId;
-        let veiculos = await new VeiculosService().buscarLocalizacaoVeiculoPorLinha(linhaId);
+        let veiculos = await VeiculosService.buscarLocalizacaoVeiculoPorLinha(linhaId);
         veiculos = Object.keys(veiculos).map((key: string) => {
             return new Veiculo(
                 veiculos[key].COD,
