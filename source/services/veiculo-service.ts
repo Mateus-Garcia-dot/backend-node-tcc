@@ -8,10 +8,12 @@ const buscarLocalizacaoVeiculoPorLinha = async (linhaId: string) => {
 
     if (!onibusLinha) {
         await atualizarLocalizacaoVeiculos();
-        return await redisClient.get(linhaId);
+        const veiculoCacheado = await redisClient.get(linhaId);
+        if (veiculoCacheado)
+            return JSON.parse(veiculoCacheado);
     }
 
-    return onibusLinha;
+    return JSON.parse(onibusLinha);
 }
 
 const atualizarLocalizacaoVeiculos = async () => {
@@ -48,7 +50,7 @@ async function salvaVeiculosRedis(veiculos: Veiculo[]) {
         if (horarioAtualizacaoCacheado.getHours() < ultimaAtualizacaoUrbs.getHours() ||
             (horarioAtualizacaoCacheado.getHours() === ultimaAtualizacaoUrbs.getHours() && horarioAtualizacaoCacheado.getMinutes() < ultimaAtualizacaoUrbs.getMinutes())) {
             atualizaVeiculos(veiculos, redisClient);
-        } 
+        }
     } else {
         atualizaVeiculos(veiculos, redisClient);
     }
@@ -56,6 +58,7 @@ async function salvaVeiculosRedis(veiculos: Veiculo[]) {
 
 function atualizaVeiculos(veiculos: Veiculo[], redisClient: RedisClient) {
     console.log('Atualizou posição dos onibus')
+    
     veiculos.forEach(async (veiculo: Veiculo) => {
         const onibusLinha = await redisClient.get(veiculo.linha);
 
