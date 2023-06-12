@@ -4,20 +4,23 @@ import { Veiculo } from "../models/veiculo";
 
 const buscarLocalizacaoVeiculoPorLinha = async (linhaId: string) => {
     const redisClient = RedisClient.getInstance();
-    let onibusLinha = await redisClient.get(linhaId);
+    let onibusCacheado = await redisClient.get(linhaId);
 
-    if (!onibusLinha) {
+    if (!onibusCacheado) {
         await atualizarLocalizacaoVeiculos();
-        const veiculoCacheado = await redisClient.get(linhaId);
-        if (veiculoCacheado)
-            return JSON.parse(veiculoCacheado);
+        onibusCacheado = await redisClient.get(linhaId);
     }
 
-    return JSON.parse(onibusLinha);
+    return JSON.parse(onibusCacheado);
 }
 
 const atualizarLocalizacaoVeiculos = async () => {
-    const todosVeiculos = await axios({ method: "get", url: `https://transporteservico.urbs.curitiba.pr.gov.br/getVeiculos.php?c=d2fde` })
+    const veiculos: any = await buscarLocalizacaoVeiculosUrbs();
+    await salvarLocalizacaoVeiculosRedis(veiculos);
+}
+
+async function buscarLocalizacaoVeiculosUrbs() {
+    const todosVeiculos = await axios({ method: "get", url: `https://transporteservico.urbs.curitiba.pr.gov.br/getVeiculos.php?c=d2fde` });
 
     const veiculos: any = Object.keys(todosVeiculos.data)
         .map((key: string) => {
@@ -29,48 +32,40 @@ const atualizarLocalizacaoVeiculos = async () => {
                 todosVeiculos.data[key].LAT,
                 todosVeiculos.data[key].LON,
                 todosVeiculos.data[key].CODIGOLINHA,
-                todosVeiculos.data[key].REFRESH,
+                todosVeiculos.data[key].REFRESH
             );
         });
-
-    await salvaVeiculosRedis(veiculos);
+    return veiculos;
 }
 
-async function salvaVeiculosRedis(veiculos: Veiculo[]) {
+async function salvarLocalizacaoVeiculosRedis(veiculosUrbs: Veiculo[]) {
     const redisClient = RedisClient.getInstance();
 
-    const ultimaAtualizacaoUrbs = converteStringParaHora(veiculos[0].horaAtualizacao);
+    const ultimaAtualizacaoUrbs = converteStringParaHora(veiculosUrbs[0].horaAtualizacao);
 
-    const onibusCacheado = await redisClient.get(veiculos[0].linha);
+    veiculosUrbs.forEach(async (veiculo: Veiculo) => {
+        const veiculoCacheado = await redisClient.get(veiculo.linha);
 
-    if (onibusCacheado) {
-        const onibus = JSON.parse(onibusCacheado);
-        const horarioAtualizacaoCacheado = converteStringParaHora(onibus[0].horaAtualizacao);
+        if (veiculoCacheado) {
+            let veiculos = JSON.parse(veiculoCacheado);
 
-        if (horarioAtualizacaoCacheado.getHours() < ultimaAtualizacaoUrbs.getHours() ||
-            (horarioAtualizacaoCacheado.getHours() === ultimaAtualizacaoUrbs.getHours() && horarioAtualizacaoCacheado.getMinutes() < ultimaAtualizacaoUrbs.getMinutes())) {
-            atualizaVeiculos(veiculos, redisClient);
-        }
-    } else {
-        atualizaVeiculos(veiculos, redisClient);
-    }
-}
+            if (veiculos.length > 0) {
+                const horarioAtualizacaoCacheado = converteStringParaHora(veiculos[0].horaAtualizacao);
 
-function atualizaVeiculos(veiculos: Veiculo[], redisClient: RedisClient) {
-    console.log('Atualizou posição dos onibus')
-    
-    veiculos.forEach(async (veiculo: Veiculo) => {
-        const onibusLinha = await redisClient.get(veiculo.linha);
+                if (horarioAtualizacaoCacheado.getHours() < ultimaAtualizacaoUrbs.getHours() ||
+                    (horarioAtualizacaoCacheado.getHours() === ultimaAtualizacaoUrbs.getHours() && horarioAtualizacaoCacheado.getMinutes() < ultimaAtualizacaoUrbs.getMinutes())) {
+                    veiculos = [veiculo];
+                } else {
+                    veiculos.push(veiculo);
+                }
+            }
 
-        if (onibusLinha && onibusLinha.length > 0) {
-            const onibus = JSON.parse(onibusLinha);
-            onibus.push(veiculo);
-            await redisClient.set(`${veiculo.linha}`, JSON.stringify(onibus));
+            await redisClient.set(`${veiculo.linha}`, JSON.stringify(veiculos));
         } else {
-            const onibus = [veiculo];
-            await redisClient.set(`${veiculo.linha}`, JSON.stringify(onibus));
+            await redisClient.set(`${veiculo.linha}`, JSON.stringify([veiculo]));
         }
     });
+    console.log('Atualizou posição dos onibus')
 }
 
 function converteStringParaHora(horarioString: string) {
