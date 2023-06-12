@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 
 routes(app);
 
-// cron.schedule('*/2 * * * *',  veiculoService.atualizarLocalizacaoVeiculos );
+cron.schedule('*/2 * * * *',  veiculoService.atualizarLocalizacaoVeiculos );
 
 
 app.use((req, res) => res.status(404));
