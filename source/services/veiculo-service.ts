@@ -15,8 +15,8 @@ const buscarLocalizacaoVeiculoPorLinha = async (linhaId: string) => {
 }
 
 const atualizarLocalizacaoVeiculos = async () => {
-    const veiculos: any = await buscarLocalizacaoVeiculosUrbs();
-    await salvarLocalizacaoVeiculosRedis(veiculos);
+    const veiculosUrbs: any = await buscarLocalizacaoVeiculosUrbs();
+    await cachearLocalizacaoVeiculosRedis(veiculosUrbs);
 }
 
 async function buscarLocalizacaoVeiculosUrbs() {
@@ -38,45 +38,30 @@ async function buscarLocalizacaoVeiculosUrbs() {
     return veiculos;
 }
 
-async function salvarLocalizacaoVeiculosRedis(veiculosUrbs: Veiculo[]) {
+async function cachearLocalizacaoVeiculosRedis(veiculosUrbs: Veiculo[]) {
     const redisClient = RedisClient.getInstance();
 
-    const ultimaAtualizacaoUrbs = converteStringParaHora(veiculosUrbs[0].horaAtualizacao);
+    const veiculosPorLinha = agrupaLocalizacaoVeiculosPorLinha(veiculosUrbs);
+
+    Object.keys(veiculosPorLinha).forEach(async (linha: string) => {
+        await redisClient.set(linha, JSON.stringify(veiculosPorLinha[linha]));
+    });
+}
+
+function agrupaLocalizacaoVeiculosPorLinha(veiculosUrbs: Veiculo[]) {
+    let veiculosPorLinha: any = [];
 
     veiculosUrbs.forEach(async (veiculo: Veiculo) => {
-        const veiculoCacheado = await redisClient.get(veiculo.linha);
-
-        if (veiculoCacheado) {
-            let veiculos = JSON.parse(veiculoCacheado);
-
-            if (veiculos.length > 0) {
-                const horarioAtualizacaoCacheado = converteStringParaHora(veiculos[0].horaAtualizacao);
-
-                if (horarioAtualizacaoCacheado.getHours() < ultimaAtualizacaoUrbs.getHours() ||
-                    (horarioAtualizacaoCacheado.getHours() === ultimaAtualizacaoUrbs.getHours() && horarioAtualizacaoCacheado.getMinutes() < ultimaAtualizacaoUrbs.getMinutes())) {
-                    veiculos = [veiculo];
-                } else {
-                    veiculos.push(veiculo);
-                }
-            }
-
-            await redisClient.set(`${veiculo.linha}`, JSON.stringify(veiculos));
+        if (veiculosPorLinha[veiculo.linha]) {
+            veiculosPorLinha[veiculo.linha].push(veiculo);
         } else {
-            await redisClient.set(`${veiculo.linha}`, JSON.stringify([veiculo]));
+            veiculosPorLinha[veiculo.linha] = [veiculo];
         }
     });
-    console.log('Atualizou posição dos onibus')
+
+    return veiculosPorLinha;
 }
 
-function converteStringParaHora(horarioString: string) {
-    const horasMinutos = horarioString.split(':');
-    const horarioUltimaAtualizacaoVeiculos = new Date();
-    horarioUltimaAtualizacaoVeiculos.setHours(Number(horasMinutos[0]));
-    horarioUltimaAtualizacaoVeiculos.setMinutes(Number(horasMinutos[1]));
-
-
-    return horarioUltimaAtualizacaoVeiculos;
-}
 
 export default { buscarLocalizacaoVeiculoPorLinha, atualizarLocalizacaoVeiculos }
 
