@@ -4,6 +4,7 @@ import veiculosRoutes from "./veiculo-route";
 import pontosRoutes from "./pontos-route";
 import loginRouter from "./login-route";
 import usuarioRouter from "./usuario-route";
+import indicadoresRouter from "./indicadores-route";
 
 const Routes = (app: any) => {
   app.route('/').get((req: express.Request, res: express.Response) => {
@@ -17,6 +18,7 @@ const Routes = (app: any) => {
     pontosRoutes,
     loginRouter,
     usuarioRouter,
+    indicadoresRouter
   )
 }
 
