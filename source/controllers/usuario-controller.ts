@@ -13,7 +13,7 @@ const cadastrar = async (req: Request, res: Response, next: NextFunction) => {
 
     var contaCadastrada = await UsuarioService.cadastrarLogin(conta);
 
-    var usuarioCadastrado = await UsuarioService.cadastrarUsuarios({
+    var usuario = await UsuarioService.cadastrarUsuarios({
         cpf: req.body.cpf,
         telefone: req.body.telefone,
         email: req.body.email,
@@ -21,12 +21,12 @@ const cadastrar = async (req: Request, res: Response, next: NextFunction) => {
         nome: req.body.nome
     });
 
-    if (!usuarioCadastrado) {
+    if (!usuario) {
         return res.status(401).json({ erro: "Nenhum usuário foi encontrado" });
     }
 
     return res.status(201).json({
-        usuarioCadastrado
+        usuario
     });
 };
 

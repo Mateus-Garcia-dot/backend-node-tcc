@@ -15,10 +15,10 @@ const usuarioSchema = new mongoose.Schema(
     cpf: {type: String},
     telefone: {type: String},
     email: {type: String},
-    // login: {
-    //   type: mongoose.Schema.Types.ObjectId,   
-    //   ref: 'login'  
-    // },
+    login: {
+      type: mongoose.Schema.Types.ObjectId,   
+      ref: 'login'  
+    },
   }
 );
 

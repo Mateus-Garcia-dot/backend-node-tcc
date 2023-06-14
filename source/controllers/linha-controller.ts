@@ -1,6 +1,7 @@
 import express from "express";
 import { ILinha } from "../models/linha";
 import { LinhasService } from '../services/linha-service';
+import { ElasticsearchService } from "../configs/elasticsearch";
 
 
 const buscarLinhas = async (req: express.Request, res: express.Response) => {
@@ -13,6 +14,11 @@ const buscarLinhas = async (req: express.Request, res: express.Response) => {
 
 const buscarLinhaPorCod = async (req: express.Request, res: express.Response) => {
     const linhaId: string = req.params.linhaId;
+
+    const elastic = ElasticsearchService.getInstance();
+    elastic.search('linhas', '022').then(e => console.log(e))
+
+
     const result = await new LinhasService().buscarLinhaPorCod(linhaId);
     let linha: ILinha | null = result;
     return res.status(200).json(linha);
