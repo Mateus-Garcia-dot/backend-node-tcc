@@ -2,17 +2,10 @@ import re
 import datetime
 
 def validate_cpf(cpf: str) -> bool:
-    # Remove caracteres não numéricos.
     cpf = re.sub(r"\D", "", cpf)
-    
-    # Verifica se o CPF tem 11 dígitos e se não é uma sequência de dígitos iguais.
     if (not cpf) or (len(cpf) != 11) or (len(set(cpf)) == 1):
         return False
-    
-    # Converte os dígitos de string para inteiros.
     cpf = list(map(int, cpf))
-    
-    # Verifica os dois dígitos verificadores.
     for i in range(9, 11):
         valor = sum((cpf[num] * ((i+1) - num) for num in range(i))) % 11
         if valor < 2:
@@ -22,7 +15,6 @@ def validate_cpf(cpf: str) -> bool:
         
         if cpf[i] != d:
             return False
-            
     return True
 
 
