@@ -1,16 +1,11 @@
-FROM node:16 as builder
+FROM python:3.9
 
-COPY . .
+WORKDIR /code
 
-RUN npm install
+COPY ./requirements.txt /code/requirements.txt
 
-RUN npm run build
+RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
-FROM node:16-alpine
+COPY . /code/
 
-WORKDIR /app
-
-COPY --from=builder /build /app
-
-CMD ["node", "index.js"]
-
+CMD ["uvicorn", "app.app:app", "--host", "0.0.0.0", "--port", "80"]
