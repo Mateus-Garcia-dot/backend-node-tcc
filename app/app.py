@@ -7,5 +7,5 @@ app = FastAPI()
 app.include_router(users.router)
 
 @app.get("/")
-async def root(user: dict = Depends(get_current_user)):
+async def root(email: str = Depends(get_current_user)):
     return {"message": "Hello World"}
