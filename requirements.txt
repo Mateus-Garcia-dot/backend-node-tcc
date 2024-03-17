@@ -2,3 +2,5 @@ uvicorn
 fastapi
 pymongo[srv]
 python-dotenv
+python-jose[cryptography]
+passlib[bcrypt]

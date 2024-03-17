@@ -1,15 +1,21 @@
+from datetime import timedelta
 from fastapi import APIRouter, HTTPException, status
-from hashlib import sha256
+
+from app.utils.jwt import create_access_token
 from ..databases.mongodb import mongo_db
 from pydantic import BaseModel
+from jose import JWTError, jwt
 from ..utils.validators import (
     validate_email,
     validate_cpf,
     validate_birthday,
     validate_cellphone,
 )
+from passlib.context import CryptContext
 
 router = APIRouter()
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class User(BaseModel):
     name: str
@@ -18,7 +24,14 @@ class User(BaseModel):
     cellphone: str
     password: str
     cpf: str
-
+ 
+def authenticate_user(email: str, password: str):
+    user = mongo_db.client.tcc.users.find_one({"email": email})
+    if not user:
+        return False
+    if not pwd_context.verify(password, user["password"]):
+        return False
+    return user
 
 @router.post("/register")
 async def register(user: User):
@@ -52,6 +65,20 @@ async def register(user: User):
             detail="User with this email or CPF already exists",
         )
 
-    user.password = sha256(user.password.encode()).hexdigest()
+    user.password = pwd_context.hash(user.password)
     mongo_db.client.tcc.users.insert_one(user.dict())
     return {"message": "User registered successfully"}
+
+
+@router.post("/login")
+async def login(email: str, password: str):
+    user = authenticate_user(email, password)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+        )
+    access_token = create_access_token(
+        data={"sub": email}
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
