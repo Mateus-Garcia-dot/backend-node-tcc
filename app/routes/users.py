@@ -11,7 +11,6 @@ from ..utils.validators import (
 
 router = APIRouter()
 
-
 class User(BaseModel):
     name: str
     email: str
@@ -19,7 +18,6 @@ class User(BaseModel):
     cellphone: str
     password: str
     cpf: str
-
 
 
 @router.post("/register")
