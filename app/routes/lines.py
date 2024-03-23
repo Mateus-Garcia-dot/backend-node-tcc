@@ -16,7 +16,8 @@ async def read_pontos(line_id: str):
     line = urbs_service.get_pontos_linha(line_id)
     if not line:
         return {"message": "Linha não encontrada"} 
-    redis_client.set(line_id, json.dumps(line), ex=30)
+    
+    redis_client.set(line_id, json.dumps(line), ex=86400)
     return line
     
 
