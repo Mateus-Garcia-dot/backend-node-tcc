@@ -4,3 +4,5 @@ pymongo[srv]
 python-dotenv
 python-jose[cryptography]
 passlib[bcrypt]
+httpx
+redis
