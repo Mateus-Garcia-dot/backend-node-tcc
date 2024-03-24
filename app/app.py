@@ -9,7 +9,7 @@ from contextlib import asynccontextmanager
 
 @asynccontextmanager
 async def startup(app: FastAPI):
-    redis  = redis_client.client
+    redis = redis_client.client
     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
     yield
 
@@ -19,6 +19,5 @@ app.include_router(users.router)
 app.include_router(lines.router)
 
 @app.get("/")
-@cache(20)
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "Hi, I'm good :)"}
