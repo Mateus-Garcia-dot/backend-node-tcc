@@ -1,5 +1,4 @@
 from fastapi import APIRouter
-from ..databases.redis_connection import redis_client
 from ..databases.urbs import urbs_service
 from ..utils.format import format_coord, format_shape
 from fastapi_cache.decorator import cache
