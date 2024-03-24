@@ -21,7 +21,7 @@ async def read_linhas():
 
 @router.get("/stops/{line_id}")
 async def read_pontos(line_id: str):
-    line = redis_client.get(line_id)
+    line = redis_client.get(f"stops_{line_id}")
     if line:
         print("Cache hit for line_id: ", line_id)
         return json.loads(line)
@@ -32,12 +32,12 @@ async def read_pontos(line_id: str):
     df['COORD'] = df.apply(lambda row: format_coord(row['LAT'], row['LON']), axis=1)
     df = df.drop(['LAT', 'LON'], axis=1)
     line = df.to_dict(orient='records')
-    redis_client.set(line_id, json.dumps(line), ex=86400)
+    redis_client.set(f"stops_{line_id}", json.dumps(line), ex=86400)
     return line
 
 @router.get("/shape/{line_id}")
 async def read_shape(line_id: str):
-    shape = redis_client.get(line_id)
+    shape = redis_client.get("shape_{line_id}")
     if shape:
         print("Cache hit for shape: ", line_id)
         return json.loads(shape)
@@ -45,5 +45,5 @@ async def read_shape(line_id: str):
     if not shape:
         return {"message": "shape not found"}
     shape = format_shape(shape)
-    redis_client.set(line_id, json.dumps(shape), ex=86400)
+    redis_client.set("shape_{line_id}", json.dumps(shape), ex=86400)
     return format_shape(shape)
