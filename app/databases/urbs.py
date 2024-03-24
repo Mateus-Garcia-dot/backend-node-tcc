@@ -13,6 +13,14 @@ class URBSWebService:
     def get_pontos_linha(self, linha: str):
         response = self.client.get(f"/getPontosLinha.php?linha={linha}&c={self.api_key}")
         return response.json()
+    
+    def get_linhas(self):
+        response = self.client.get(f"/getLinhas.php?c={self.api_key}")
+        return response.json()
+
+    def get_shape(self, line_id: str):
+        response = self.client.get(f"/getShapeLinha.php?linha={line_id}&c={self.api_key}")
+        return response.json()
 
     
 urbs_service = URBSWebService(os.getenv("URBS_API_KEY"))
