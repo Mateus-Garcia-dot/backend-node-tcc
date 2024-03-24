@@ -1,10 +1,14 @@
 from fastapi import APIRouter, Depends
 from ..databases.urbs import urbs_service
+from ..databases.redis_connection import redis_client
 from ..utils.format import format_coord, format_shape
+from ..auth.jwt_auth import get_current_user
 import pandas as pd
 import json
 
-router = APIRouter()
+router = APIRouter(
+    dependencies=[Depends(get_current_user)]
+)
 
 @router.get("/lines")
 async def read_linhas():
@@ -45,4 +49,4 @@ async def read_shape(line_id: str):
         return {"message": "shape not found"}
     shape = format_shape(shape)
     redis_client.set(f"shape_{line_id}", json.dumps(shape), ex=86400)
-    return format_shape(shape)
+    return shape
