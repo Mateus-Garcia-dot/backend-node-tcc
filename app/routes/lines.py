@@ -37,7 +37,7 @@ async def read_pontos(line_id: str):
 
 @router.get("/shape/{line_id}")
 async def read_shape(line_id: str):
-    shape = redis_client.get("shape_{line_id}")
+    shape = redis_client.get(f"shape_{line_id}")
     if shape:
         print("Cache hit for shape: ", line_id)
         return json.loads(shape)
@@ -45,5 +45,5 @@ async def read_shape(line_id: str):
     if not shape:
         return {"message": "shape not found"}
     shape = format_shape(shape)
-    redis_client.set("shape_{line_id}", json.dumps(shape), ex=86400)
+    redis_client.set(f"shape_{line_id}", json.dumps(shape), ex=86400)
     return format_shape(shape)
