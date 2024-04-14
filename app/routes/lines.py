@@ -6,9 +6,8 @@ from ..auth.jwt_auth import get_current_user
 import pandas as pd
 import json
 
-router = APIRouter(
-    dependencies=[Depends(get_current_user)]
-)
+router = APIRouter(dependencies=[Depends(get_current_user)])
+
 
 @router.get("/lines")
 async def read_linhas():
@@ -22,6 +21,7 @@ async def read_linhas():
     redis_client.set("linhas", json.dumps(linhas), ex=86400)
     return linhas
 
+
 @router.get("/stops/{line_id}")
 async def read_pontos(line_id: str):
     line = redis_client.get(f"stops_{line_id}")
@@ -32,11 +32,12 @@ async def read_pontos(line_id: str):
     if not line:
         return {"message": "line not found"}
     df = pd.DataFrame(line)
-    df['COORD'] = df.apply(lambda row: format_coord(row['LAT'], row['LON']), axis=1)
-    df = df.drop(['LAT', 'LON'], axis=1)
-    line = df.to_dict(orient='records')
+    df["COORD"] = df.apply(lambda row: format_coord(row["LAT"], row["LON"]), axis=1)
+    df = df.drop(["LAT", "LON"], axis=1)
+    line = df.to_dict(orient="records")
     redis_client.set(f"stops_{line_id}", json.dumps(line), ex=86400)
     return line
+
 
 @router.get("/shape/{line_id}")
 async def read_shape(line_id: str):
@@ -50,3 +51,16 @@ async def read_shape(line_id: str):
     shape = format_shape(shape)
     redis_client.set(f"shape_{line_id}", json.dumps(shape), ex=86400)
     return shape
+
+
+@router.get("/vehicles/{line_id}")
+async def read_veiculos(line_id: str):
+    veiculos = redis_client.get(f"vehicles_{line_id}")
+    if veiculos:
+        print("Cache hit for vehicles: ", line_id)
+        return json.loads(veiculos)
+    veiculos = urbs_service.get_veiculos(line_id)
+    if not veiculos:
+        return {"message": "vehicles not found"}
+    redis_client.set(f"vehicles_{line_id}", json.dumps(veiculos), ex=120)
+    return veiculos
