@@ -1,10 +1,7 @@
-from datetime import timedelta
 from fastapi import APIRouter, HTTPException, status
-
 from app.utils.jwt import create_access_token
 from ..databases.mongodb import mongo_db
 from pydantic import BaseModel
-from jose import JWTError, jwt
 from ..utils.validators import (
     validate_email,
     validate_cpf,
