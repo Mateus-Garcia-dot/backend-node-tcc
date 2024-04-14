@@ -60,6 +60,7 @@ async def read_veiculos(line_id: str):
         print("Cache hit for vehicles: ", line_id)
         return json.loads(veiculos)
     veiculos = urbs_service.get_veiculos(line_id)
+    veiculos = [value for _, value in veiculos.items()]
     if not veiculos:
         return {"message": "vehicles not found"}
     redis_client.set(f"vehicles_{line_id}", json.dumps(veiculos), ex=120)
