@@ -61,6 +61,18 @@ async def read_shape(line_id: str):
     redis_client.set(f"shape_{line_id}", json.dumps(shape), ex=86400)
     return shape
 
+@router.get("/vehicles")
+async def read_veiculos():
+    veiculos = redis_client.get("vehicles_all")
+    if veiculos:
+        print("Cache hit for vehicles")
+        return json.loads(veiculos)
+    veiculos = urbs_service.get_veiculos("")
+    veiculos = [value for _, value in veiculos.items()]
+    if not veiculos:
+        return {"message": "vehicles not found"}
+    redis_client.set("vehicles_all", json.dumps(veiculos), ex=120)
+    return veiculos
 
 @router.get("/vehicles/{line_id}")
 async def read_veiculos(line_id: str):
