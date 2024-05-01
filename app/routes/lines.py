@@ -35,6 +35,15 @@ async def read_pontos(line_id: str):
     df["COORD"] = df.apply(lambda row: format_coord(row["LAT"], row["LON"]), axis=1)
     df = df.drop(["LAT", "LON"], axis=1)
     line = df.to_dict(orient="records")
+
+    table = urbs_service.get_tabela_linha(line_id)
+
+    for stop in line:
+        table_stops = [
+            table_stop for table_stop in table if table_stop["NUM"] == stop["NUM"]
+        ]
+        stop["table"] = table_stops
+
     redis_client.set(f"stops_{line_id}", json.dumps(line), ex=86400)
     return line
 
@@ -65,6 +74,7 @@ async def read_veiculos(line_id: str):
         return {"message": "vehicles not found"}
     redis_client.set(f"vehicles_{line_id}", json.dumps(veiculos), ex=120)
     return veiculos
+
 
 @router.get("/tableline/{line_id}")
 async def read_veiculos(line_id: str):
