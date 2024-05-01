@@ -25,6 +25,11 @@ class URBSWebService:
     def get_veiculos(self, line_id: str):
         response = self.client.get(f"/getVeiculos.php?linha={line_id}&c={self.api_key}")
         return response.json()
+    
+    def get_tabela_linha(self, line_id: str):
+        response = self.client.get(f"/getTabelaLinha.php?linha={line_id}&c={self.api_key}")
+        print(response.read())
+        return response.json()
 
     
 urbs_service = URBSWebService(os.getenv("URBS_API_KEY"))

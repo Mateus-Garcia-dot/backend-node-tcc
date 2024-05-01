@@ -65,3 +65,15 @@ async def read_veiculos(line_id: str):
         return {"message": "vehicles not found"}
     redis_client.set(f"vehicles_{line_id}", json.dumps(veiculos), ex=120)
     return veiculos
+
+@router.get("/tableline/{line_id}")
+async def read_veiculos(line_id: str):
+    table = redis_client.get(f"line_table_{line_id}")
+    if table:
+        print("Cache hit for vehicles: ", line_id)
+        return json.loads(table)
+    table = urbs_service.get_tabela_linha(line_id)
+    if not table:
+        return {"message": "vehicles not found"}
+    redis_client.set(f"line_table_{line_id}", json.dumps(table), ex=86400)
+    return table

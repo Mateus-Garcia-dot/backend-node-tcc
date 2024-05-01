@@ -19,7 +19,7 @@ def validate_cpf(cpf: str) -> bool:
 
 
 def validate_email(email: str) -> bool:
-    return bool(re.match(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", email))
+    return bool(re.match(r"^[a-za-z0-9._%+-]+@[a-za-z0-9.-]+\.[a-za-z]{2,}$", email))
 
 
 def validate_birthday(birthdate: str) -> bool:
