@@ -1,7 +1,9 @@
 from fastapi import APIRouter, Depends
+from datetime import datetime
 from ..databases.urbs import urbs_service
 from ..databases.redis_connection import redis_client
 from ..utils.format import format_coord, format_shape
+from ..databases.mongodb import mongo_db
 from ..auth.jwt_auth import get_current_user
 import pandas as pd
 import json
@@ -16,6 +18,7 @@ async def read_linhas():
         print("Cache hit for linhas")
         return json.loads(linhas)
     linhas = urbs_service.get_linhas()
+    mongo_db.client.tcc.lines.insert_one({ "data": linhas, "date": datetime.now() })
     if not linhas:
         return {"message": "lines not found"}
     redis_client.set("linhas", json.dumps(linhas), ex=86400)
@@ -44,6 +47,7 @@ async def read_pontos(line_id: str):
         ]
         stop["table"] = table_stops
 
+    mongo_db.client.tcc.stops.insert_one({ "data": line, "date": datetime.now() })
     redis_client.set(f"stops_{line_id}", json.dumps(line), ex=86400)
     return line
 
@@ -58,8 +62,10 @@ async def read_shape(line_id: str):
     if not shape:
         return {"message": "shape not found"}
     shape = format_shape(shape)
+    mongo_db.client.tcc.shape.insert_one({ "data": shape, "date": datetime.now() })
     redis_client.set(f"shape_{line_id}", json.dumps(shape), ex=86400)
     return shape
+
 
 @router.get("/vehicles")
 async def read_veiculos():
@@ -72,7 +78,9 @@ async def read_veiculos():
     if not veiculos:
         return {"message": "vehicles not found"}
     redis_client.set("vehicles_all", json.dumps(veiculos), ex=120)
+    mongo_db.client.tcc.vehicle_all.insert_one({ "data": veiculos, "date": datetime.now() })
     return veiculos
+
 
 @router.get("/vehicles/{line_id}")
 async def read_veiculos(line_id: str):
@@ -84,6 +92,7 @@ async def read_veiculos(line_id: str):
     veiculos = [value for _, value in veiculos.items()]
     if not veiculos:
         return {"message": "vehicles not found"}
+    mongo_db.client.tcc.vehicle.insert_one({ "data": veiculos, "date": datetime.now() })
     redis_client.set(f"vehicles_{line_id}", json.dumps(veiculos), ex=120)
     return veiculos
 
@@ -97,5 +106,6 @@ async def read_veiculos(line_id: str):
     table = urbs_service.get_tabela_linha(line_id)
     if not table:
         return {"message": "vehicles not found"}
+    mongo_db.client.tcc.table_line.insert_one({ "data": table, "date": datetime.now() })
     redis_client.set(f"line_table_{line_id}", json.dumps(table), ex=86400)
     return table

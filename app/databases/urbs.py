@@ -28,7 +28,6 @@ class URBSWebService:
     
     def get_tabela_linha(self, line_id: str):
         response = self.client.get(f"/getTabelaLinha.php?linha={line_id}&c={self.api_key}")
-        print(response.read())
         return response.json()
 
     
