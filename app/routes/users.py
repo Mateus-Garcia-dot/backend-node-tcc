@@ -14,6 +14,7 @@ router = APIRouter()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+
 class User(BaseModel):
     name: str
     email: str
@@ -21,7 +22,8 @@ class User(BaseModel):
     cellphone: str
     password: str
     cpf: str
- 
+
+
 def authenticate_user(email: str, password: str):
     user = mongo_db.client.tcc.users.find_one({"email": email})
     if not user:
@@ -29,6 +31,7 @@ def authenticate_user(email: str, password: str):
     if not pwd_context.verify(password, user["password"]):
         return False
     return user
+
 
 @router.post("/register")
 async def register(user: User):
@@ -75,7 +78,5 @@ async def login(email: str, password: str):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
         )
-    access_token = create_access_token(
-        data={"sub": email}
-    )
+    access_token = create_access_token(data={"sub": email})
     return {"access_token": access_token, "token_type": "bearer"}

@@ -1,5 +1,10 @@
+from typing import List
 from fastapi import APIRouter, Depends
 from datetime import datetime
+
+from pydantic import BaseModel, Field
+
+from app.routes.users import User
 from ..databases.urbs import urbs_service
 from ..databases.redis_connection import redis_client
 from ..utils.format import format_coord, format_shape
@@ -109,3 +114,18 @@ async def read_veiculos(line_id: str):
     mongo_db.client.tcc.table_line.insert_one({ "data": table, "date": datetime.now() })
     redis_client.set(f"line_table_{line_id}", json.dumps(table), ex=86400)
     return table
+
+# Define a new Pydantic model for the coordinates
+class Coordinates(BaseModel):
+    coordinates: List[float] = Field(..., min_items=2, max_items=2)
+
+# Create a new route that accepts the user's email and coordinates
+@router.post("/save_coordinates")
+async def save_coordinates(coordinates: Coordinates, user: User = Depends(get_current_user)):
+    # Save the coordinates along with the current time and user's email in the database
+    mongo_db.client.tcc.coordinates.insert_one({
+        "email": user,
+        "coordinates": coordinates.coordinates,
+        "timestamp": datetime.now()
+    })
+    return {"message": "Coordinates saved successfully"}
