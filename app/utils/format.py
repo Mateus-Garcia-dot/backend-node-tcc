@@ -31,4 +31,6 @@ def format_shape(shape: dict) -> dict:
     threshold_next = mean_distance_next + 3 * std_distance_next
     df_filtered = df[(df['distance_to_prev'] <= threshold_prev) & (df['distance_to_next'] <= threshold_next)]
     df_filtered = df_filtered.drop(['distance_to_prev', 'distance_to_next'], axis=1)
+    most_common_shp = df_filtered.groupby('SHP').size().idxmax()
+    df_filtered = df_filtered[df_filtered['SHP'] == most_common_shp]
     return df_filtered.to_dict(orient='records')
