@@ -22,6 +22,7 @@ class User(BaseModel):
     cellphone: str
     password: str
     cpf: str
+    isAdmin: bool = False
 
 
 def authenticate_user(email: str, password: str):
