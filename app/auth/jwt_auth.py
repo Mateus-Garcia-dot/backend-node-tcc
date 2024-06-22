@@ -11,12 +11,6 @@ bearer_scheme = HTTPBearer()
 async def get_current_user(token: str = Depends(bearer_scheme)):
     try:
         payload = jwt.decode(token.credentials, JWT_SECRET_KEY, algorithms=[ALGORITHM])
-        if datetime.fromtimestamp(payload.get("exp")) < datetime.now():
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Token expired",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
     except (jwt.JWTError, ValidationError):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
