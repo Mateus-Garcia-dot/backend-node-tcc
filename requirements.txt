@@ -9,3 +9,4 @@ redis
 pandas
 geopy
 fastapi-cache2
+elasticsearch

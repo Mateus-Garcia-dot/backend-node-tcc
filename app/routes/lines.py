@@ -1,20 +1,21 @@
 from typing import List
 from fastapi import APIRouter, Depends
 from datetime import datetime
-
 from pydantic import BaseModel, Field
-
 from app.routes.users import User
 from ..databases.urbs import urbs_service
+from ..databases.elastic import get_elastic_client
 from ..databases.redis_connection import redis_client
 from ..utils.format import format_coord, format_shape
 from ..databases.mongodb import mongo_db
 from ..auth.jwt_auth import get_current_user
 import pandas as pd
 import json
+import pytz
 
 router = APIRouter(dependencies=[Depends(get_current_user)])
 
+es = get_elastic_client()
 
 @router.get("/lines")
 async def read_linhas():
@@ -115,17 +116,16 @@ async def read_veiculos(line_id: str):
     redis_client.set(f"line_table_{line_id}", json.dumps(table), ex=86400)
     return table
 
-# Define a new Pydantic model for the coordinates
 class Coordinates(BaseModel):
     coordinates: List[float] = Field(..., min_items=2, max_items=2)
 
-# Create a new route that accepts the user's email and coordinates
 @router.post("/save_coordinates")
 async def save_coordinates(coordinates: Coordinates, user: User = Depends(get_current_user)):
-    # Save the coordinates along with the current time and user's email in the database
-    mongo_db.client.tcc.coordinates.insert_one({
+    data = {
         "email": user,
         "coordinates": coordinates.coordinates,
-        "timestamp": datetime.now()
-    })
+        "timestamp": datetime.now(pytz.utc)
+    }
+    es.index(index="coordinates", body=data)
+    mongo_db.client.tcc.coordinates.insert_one(data)
     return {"message": "Coordinates saved successfully"}
