@@ -118,13 +118,14 @@ async def read_veiculos(line_id: str):
 
 class Coordinates(BaseModel):
     coordinates: List[float] = Field(..., min_items=2, max_items=2)
+    date: int = Field(0)
 
 @router.post("/save_coordinates")
 async def save_coordinates(coordinates: Coordinates, user: User = Depends(get_current_user)):
     data = {
         "email": user,
         "coordinates": coordinates.coordinates,
-        "timestamp": datetime.now(pytz.utc)
+        "timestamp": datetime.now(pytz.utc) if coordinates.date == 0 else datetime.fromtimestamp(coordinates.date, pytz.utc)
     }
     es.index(index="coordinates", body=data)
     mongo_db.client.tcc.coordinates.insert_one(data)
